@@ -1,10 +1,6 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogIn, LogOut, User } from "lucide-react";
-import { memo, useCallback } from "react";
-import type { AuthButtonProps } from "@/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,19 +9,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
+import type { AuthButtonProps } from "@/types";
+import { LogIn, LogOut, User } from "lucide-react";
+import { memo, useCallback } from "react";
 
-export const AuthButton = memo(function AuthButton({ className }: AuthButtonProps = {}) {
+export const AuthButton = memo(function AuthButton({
+  className,
+}: AuthButtonProps = {}) {
   const { user, signInWithGoogle, signOut, loading } = useAuth();
 
   const handleSignIn = useCallback(() => {
-    signInWithGoogle().catch(error => {
-      console.error('Sign in failed:', error);
+    signInWithGoogle().catch((error) => {
+      console.error("Sign in failed:", error);
     });
   }, [signInWithGoogle]);
 
   const handleSignOut = useCallback(() => {
-    signOut().catch(error => {
-      console.error('Sign out failed:', error);
+    signOut().catch((error) => {
+      console.error("Sign out failed:", error);
     });
   }, [signOut]);
 
@@ -49,9 +51,11 @@ export const AuthButton = memo(function AuthButton({ className }: AuthButtonProp
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className={`gap-2 ${className || ''}`}>
+        <Button variant="outline" className={`gap-2 ${className || ""}`}>
           <User className="h-4 w-4" />
-          <span className="hidden sm:inline">{user.displayName || user.email}</span>
+          <span className="hidden sm:inline">
+            {user.displayName || user.email}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

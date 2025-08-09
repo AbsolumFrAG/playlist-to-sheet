@@ -1,11 +1,21 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Loader2, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { SecureTokenManager, createSecureHeaders } from "@/lib/token-security";
-import type { PlaylistConverterProps, LoadingStates, ApiResponse, YouTubeVideo } from "@/types";
+import type {
+  ApiResponse,
+  LoadingStates,
+  PlaylistConverterProps,
+  YouTubeVideo,
+} from "@/types";
+import {
+  AlertCircle,
+  CheckCircle,
+  FileSpreadsheet,
+  Loader2,
+} from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
 
 export function PlaylistConverter({ className }: PlaylistConverterProps = {}) {
   const { user } = useAuth();
@@ -24,13 +34,18 @@ export function PlaylistConverter({ className }: PlaylistConverterProps = {}) {
     if (!playlistUrl.trim()) return false;
     try {
       const url = new URL(playlistUrl);
-      return url.hostname.includes('youtube.com') && url.searchParams.has('list');
+      return (
+        url.hostname.includes("youtube.com") && url.searchParams.has("list")
+      );
     } catch {
       return false;
     }
   }, [playlistUrl]);
 
-  const isProcessing = loadingStates.isLoading || loadingStates.isProcessingPlaylist || loadingStates.isCreatingSheet;
+  const isProcessing =
+    loadingStates.isLoading ||
+    loadingStates.isProcessingPlaylist ||
+    loadingStates.isCreatingSheet;
 
   const handleConvert = useCallback(async () => {
     if (!isValidUrl) {
@@ -38,7 +53,12 @@ export function PlaylistConverter({ className }: PlaylistConverterProps = {}) {
       return;
     }
 
-    setLoadingStates({ isLoading: true, isAuthenticating: false, isProcessingPlaylist: false, isCreatingSheet: false });
+    setLoadingStates({
+      isLoading: true,
+      isAuthenticating: false,
+      isProcessingPlaylist: false,
+      isCreatingSheet: false,
+    });
     setError(null);
     setSuccess(null);
 
@@ -51,8 +71,8 @@ export function PlaylistConverter({ className }: PlaylistConverterProps = {}) {
       }
 
       // Fetch playlist videos through API route
-      setLoadingStates(prev => ({ ...prev, isProcessingPlaylist: true }));
-      
+      setLoadingStates((prev) => ({ ...prev, isProcessingPlaylist: true }));
+
       const playlistResponse = await fetch("/api/youtube/playlist", {
         method: "POST",
         headers: createSecureHeaders(),
@@ -67,16 +87,21 @@ export function PlaylistConverter({ className }: PlaylistConverterProps = {}) {
         throw new Error(errorData.error || "Failed to fetch playlist");
       }
 
-      const playlistData: ApiResponse<{ videos: YouTubeVideo[] }> = await playlistResponse.json();
+      const playlistData: ApiResponse<{ videos: YouTubeVideo[] }> =
+        await playlistResponse.json();
       const videos = playlistData.data?.videos || [];
-      
+
       if (!videos || videos.length === 0) {
         throw new Error("No videos found in the playlist");
       }
 
       // Create spreadsheet through API route
-      setLoadingStates(prev => ({ ...prev, isProcessingPlaylist: false, isCreatingSheet: true }));
-      
+      setLoadingStates((prev) => ({
+        ...prev,
+        isProcessingPlaylist: false,
+        isCreatingSheet: true,
+      }));
+
       const sheetResponse = await fetch("/api/sheets/create", {
         method: "POST",
         headers: createSecureHeaders(),
@@ -92,9 +117,10 @@ export function PlaylistConverter({ className }: PlaylistConverterProps = {}) {
         throw new Error(errorData.error || "Failed to create spreadsheet");
       }
 
-      const sheetData: ApiResponse<{ spreadsheetUrl: string }> = await sheetResponse.json();
+      const sheetData: ApiResponse<{ spreadsheetUrl: string }> =
+        await sheetResponse.json();
       const spreadsheetUrl = sheetData.data?.spreadsheetUrl;
-      
+
       if (spreadsheetUrl) {
         setSuccess(spreadsheetUrl);
         setPlaylistUrl("");
@@ -102,10 +128,17 @@ export function PlaylistConverter({ className }: PlaylistConverterProps = {}) {
         throw new Error("Failed to get spreadsheet URL");
       }
     } catch (err) {
-      console.error('Playlist conversion error:', err);
-      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+      console.error("Playlist conversion error:", err);
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred"
+      );
     } finally {
-      setLoadingStates({ isLoading: false, isAuthenticating: false, isProcessingPlaylist: false, isCreatingSheet: false });
+      setLoadingStates({
+        isLoading: false,
+        isAuthenticating: false,
+        isProcessingPlaylist: false,
+        isCreatingSheet: false,
+      });
     }
   }, [playlistUrl, isValidUrl]);
 
@@ -113,14 +146,15 @@ export function PlaylistConverter({ className }: PlaylistConverterProps = {}) {
     return (
       <div className="text-center p-8 bg-muted/50 rounded-lg">
         <p className="text-muted-foreground mb-4">
-          Please sign in with Google to convert YouTube playlists to Google Sheets
+          Please sign in with Google to convert YouTube playlists to Google
+          Sheets
         </p>
       </div>
     );
   }
 
   return (
-    <div className={`w-full max-w-2xl mx-auto space-y-6 ${className || ''}`}>
+    <div className={`w-full max-w-2xl mx-auto space-y-6 ${className || ""}`}>
       <div className="space-y-2">
         <label htmlFor="playlist-url" className="text-sm font-medium">
           YouTube Playlist URL
@@ -135,7 +169,10 @@ export function PlaylistConverter({ className }: PlaylistConverterProps = {}) {
             className="flex-1 px-3 py-2 border rounded-md bg-background"
             disabled={isProcessing}
           />
-          <Button onClick={handleConvert} disabled={isProcessing || !isValidUrl}>
+          <Button
+            onClick={handleConvert}
+            disabled={isProcessing || !isValidUrl}
+          >
             {loadingStates.isProcessingPlaylist ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

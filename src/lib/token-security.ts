@@ -3,10 +3,10 @@
  * Provides secure storage and retrieval of authentication tokens
  */
 
-import type { AuthUser } from '@/types';
+import type { AuthUser } from "@/types";
 
-const TOKEN_KEY = 'auth_token';
-const TOKEN_EXPIRY_KEY = 'auth_token_expiry';
+const TOKEN_KEY = "auth_token";
+const TOKEN_EXPIRY_KEY = "auth_token_expiry";
 
 export class SecureTokenManager {
   /**
@@ -14,15 +14,15 @@ export class SecureTokenManager {
    */
   static storeToken(token: string, expiresIn: number = 3600): void {
     try {
-      if (typeof window === 'undefined') return;
+      if (typeof window === "undefined") return;
 
-      const expiryTime = Date.now() + (expiresIn * 1000);
-      
+      const expiryTime = Date.now() + expiresIn * 1000;
+
       // Store in sessionStorage (cleared when browser closes)
       sessionStorage.setItem(TOKEN_KEY, token);
       sessionStorage.setItem(TOKEN_EXPIRY_KEY, expiryTime.toString());
     } catch (error) {
-      console.error('Failed to store token:', error);
+      console.error("Failed to store token:", error);
     }
   }
 
@@ -31,7 +31,7 @@ export class SecureTokenManager {
    */
   static getToken(): string | null {
     try {
-      if (typeof window === 'undefined') return null;
+      if (typeof window === "undefined") return null;
 
       const token = sessionStorage.getItem(TOKEN_KEY);
       const expiryStr = sessionStorage.getItem(TOKEN_EXPIRY_KEY);
@@ -47,7 +47,7 @@ export class SecureTokenManager {
 
       return token;
     } catch (error) {
-      console.error('Failed to retrieve token:', error);
+      console.error("Failed to retrieve token:", error);
       return null;
     }
   }
@@ -64,12 +64,12 @@ export class SecureTokenManager {
    */
   static clearToken(): void {
     try {
-      if (typeof window === 'undefined') return;
+      if (typeof window === "undefined") return;
 
       sessionStorage.removeItem(TOKEN_KEY);
       sessionStorage.removeItem(TOKEN_EXPIRY_KEY);
     } catch (error) {
-      console.error('Failed to clear token:', error);
+      console.error("Failed to clear token:", error);
     }
   }
 
@@ -88,13 +88,13 @@ export class SecureTokenManager {
  */
 export function createSecureHeaders(): HeadersInit {
   const token = SecureTokenManager.getToken();
-  
+
   const headers: HeadersInit = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   return headers;

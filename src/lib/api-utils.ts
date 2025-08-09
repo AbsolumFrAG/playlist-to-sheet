@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import type { ApiResponse, ApiError } from '@/types';
+import type { ApiError, ApiResponse } from "@/types";
+import { NextResponse } from "next/server";
 
 /**
  * Create a standardized success response
@@ -9,11 +9,14 @@ export function createSuccessResponse<T>(
   message?: string,
   status: number = 200
 ): NextResponse<ApiResponse<T>> {
-  return NextResponse.json({
-    success: true,
-    data,
-    message,
-  }, { status });
+  return NextResponse.json(
+    {
+      success: true,
+      data,
+      message,
+    },
+    { status }
+  );
 }
 
 /**
@@ -24,11 +27,15 @@ export function createErrorResponse(
   message?: string,
   status: number = 400
 ): NextResponse<ApiError> {
-  return NextResponse.json({
-    success: false,
-    error,
-    message: message || error,
-  }, { status });
+  return NextResponse.json(
+    {
+      success: false,
+      error,
+      message: message || error,
+      statusCode: status,
+    },
+    { status }
+  );
 }
 
 /**
@@ -36,46 +43,45 @@ export function createErrorResponse(
  */
 export function handleApiError(
   error: unknown,
-  context: string = 'API Error'
+  context: string = "API Error"
 ): NextResponse<ApiError> {
   console.error(`${context}:`, error);
 
   if (error instanceof Error) {
     // Handle specific error types
-    if (error.message.includes('unauthorized') || error.message.includes('403')) {
+    if (
+      error.message.includes("unauthorized") ||
+      error.message.includes("403")
+    ) {
       return createErrorResponse(
-        'Authentication required',
-        'Please sign in and try again',
+        "Authentication required",
+        "Please sign in and try again",
         401
       );
     }
 
-    if (error.message.includes('not found') || error.message.includes('404')) {
-      return createErrorResponse(
-        'Resource not found',
-        error.message,
-        404
-      );
+    if (error.message.includes("not found") || error.message.includes("404")) {
+      return createErrorResponse("Resource not found", error.message, 404);
     }
 
-    if (error.message.includes('rate limit') || error.message.includes('429')) {
+    if (error.message.includes("rate limit") || error.message.includes("429")) {
       return createErrorResponse(
-        'Rate limit exceeded',
-        'Please try again later',
+        "Rate limit exceeded",
+        "Please try again later",
         429
       );
     }
 
     return createErrorResponse(
       error.message,
-      'An error occurred while processing your request',
+      "An error occurred while processing your request",
       500
     );
   }
 
   return createErrorResponse(
-    'Internal server error',
-    'An unexpected error occurred',
+    "Internal server error",
+    "An unexpected error occurred",
     500
   );
 }
@@ -87,9 +93,13 @@ export function validateRequiredFields(
   body: Record<string, unknown>,
   requiredFields: string[]
 ): { isValid: boolean; missingFields: string[] } {
-  const missingFields = requiredFields.filter(field => {
+  const missingFields = requiredFields.filter((field) => {
     const value = body[field];
-    return value === undefined || value === null || (typeof value === 'string' && value.trim() === '');
+    return (
+      value === undefined ||
+      value === null ||
+      (typeof value === "string" && value.trim() === "")
+    );
   });
 
   return {
@@ -105,12 +115,15 @@ export function sanitizeUrl(url: string): string {
   try {
     const parsedUrl = new URL(url);
     // Only allow HTTPS URLs from YouTube
-    if (parsedUrl.protocol !== 'https:' || !parsedUrl.hostname.includes('youtube.com')) {
-      throw new Error('Invalid URL');
+    if (
+      parsedUrl.protocol !== "https:" ||
+      !parsedUrl.hostname.includes("youtube.com")
+    ) {
+      throw new Error("Invalid URL");
     }
     return parsedUrl.toString();
   } catch {
-    throw new Error('Invalid URL format');
+    throw new Error("Invalid URL format");
   }
 }
 
@@ -130,10 +143,10 @@ class SimpleRateLimiter {
   isAllowed(identifier: string): boolean {
     const now = Date.now();
     const requests = this.requests.get(identifier) || [];
-    
+
     // Remove old requests outside the window
-    const validRequests = requests.filter(time => now - time < this.windowMs);
-    
+    const validRequests = requests.filter((time) => now - time < this.windowMs);
+
     if (validRequests.length >= this.maxRequests) {
       return false;
     }
@@ -141,7 +154,7 @@ class SimpleRateLimiter {
     // Add current request
     validRequests.push(now);
     this.requests.set(identifier, validRequests);
-    
+
     return true;
   }
 }

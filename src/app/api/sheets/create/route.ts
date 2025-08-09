@@ -1,37 +1,51 @@
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  handleApiError,
+  rateLimiter,
+  validateRequiredFields,
+} from "@/lib/api-utils";
+import type { SheetsCreateRequest, YouTubeVideo } from "@/types";
 import { google } from "googleapis";
 import { NextRequest } from "next/server";
-import { createSuccessResponse, createErrorResponse, handleApiError, validateRequiredFields, rateLimiter } from "@/lib/api-utils";
-import type { YouTubeVideo, SheetsCreateRequest } from "@/types";
 
 export async function POST(request: NextRequest) {
   try {
     // Rate limiting
-    const clientIp = request.headers.get('x-forwarded-for') || 'anonymous';
+    const clientIp = request.headers.get("x-forwarded-for") || "anonymous";
     if (!rateLimiter.isAllowed(clientIp)) {
       return createErrorResponse(
-        'Rate limit exceeded',
-        'Too many requests. Please try again later.',
+        "Rate limit exceeded",
+        "Too many requests. Please try again later.",
         429
       );
     }
 
     const body = await request.json();
-    const { isValid, missingFields } = validateRequiredFields(body, ['videos', 'accessToken']);
-    
+    const { isValid, missingFields } = validateRequiredFields(body, [
+      "videos",
+      "playlistTitle",
+      "accessToken",
+    ]);
+
     if (!isValid) {
       return createErrorResponse(
-        `Missing required fields: ${missingFields.join(', ')}`,
-        'Please provide all required information',
+        `Missing required fields: ${missingFields.join(", ")}`,
+        "Please provide all required information",
         400
       );
     }
 
-    const { videos, playlistName, accessToken }: SheetsCreateRequest & { accessToken: string } = body;
-    
+    const {
+      videos,
+      playlistTitle,
+      accessToken,
+    }: SheetsCreateRequest & { accessToken: string } = body;
+
     if (!Array.isArray(videos) || videos.length === 0) {
       return createErrorResponse(
-        'Invalid videos data',
-        'Videos must be a non-empty array',
+        "Invalid videos data",
+        "Videos must be a non-empty array",
         400
       );
     }
@@ -47,7 +61,9 @@ export async function POST(request: NextRequest) {
     const spreadsheet = await sheets.spreadsheets.create({
       requestBody: {
         properties: {
-          title: `YouTube Playlist: ${playlistName || new Date().toLocaleDateString()}`,
+          title: `YouTube Playlist: ${
+            playlistTitle || new Date().toLocaleDateString()
+          }`,
         },
         sheets: [
           {
@@ -139,9 +155,9 @@ export async function POST(request: NextRequest) {
 
     // Return the URL to the created spreadsheet
     const spreadsheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`;
-    
+
     return createSuccessResponse(
-      { 
+      {
         spreadsheetId,
         spreadsheetUrl,
         videoCount: videos.length,
@@ -149,6 +165,6 @@ export async function POST(request: NextRequest) {
       `Successfully created spreadsheet with ${videos.length} videos`
     );
   } catch (error) {
-    return handleApiError(error, 'Google Sheets API');
+    return handleApiError(error, "Google Sheets API");
   }
 }

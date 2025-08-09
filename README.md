@@ -14,7 +14,7 @@ A Next.js application that converts YouTube playlists to Google Sheets. Simply e
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 20+ 
 - pnpm (recommended)
 - Google API credentials (for Google Sheets and YouTube APIs)
 - Firebase project (for authentication)

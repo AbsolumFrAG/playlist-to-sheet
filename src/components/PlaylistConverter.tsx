@@ -107,7 +107,7 @@ export function PlaylistConverter({ className }: PlaylistConverterProps = {}) {
         headers: createSecureHeaders(),
         body: JSON.stringify({
           videos,
-          playlistName: `Playlist - ${new Date().toLocaleDateString()}`,
+          playlistTitle: `Playlist - ${new Date().toLocaleDateString()}`,
           accessToken,
         }),
       });

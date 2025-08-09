@@ -1,4 +1,3 @@
-import { MicrosoftClarity } from "@/components/MicrosoftClarity";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import type { Metadata } from "next";
@@ -30,7 +29,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <MicrosoftClarity />
         <AuthProvider>
           <ThemeProvider
             attribute="class"

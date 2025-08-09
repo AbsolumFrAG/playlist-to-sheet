@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@microsoft/clarity':
-        specifier: ^1.0.0
-        version: 1.0.0
       '@radix-ui/react-dropdown-menu':
         specifier: ^2.1.15
         version: 2.1.15(@types/react-dom@19.1.7(@types/react@19.1.9))(@types/react@19.1.9)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -26,9 +23,6 @@ importers:
       firebase:
         specifier: ^12.1.0
         version: 12.1.0
-      google-auth-library:
-        specifier: ^10.2.1
-        version: 10.2.1
       googleapis:
         specifier: ^155.0.1
         version: 155.0.1
@@ -528,9 +522,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.29':
     resolution: {integrity: sha512-uw6guiW/gcAGPDhLmd77/6lW8QLeiV5RUTsAX46Db6oLhGaVj4lhnPwb184s1bkc8kdVg/+h988dro8GRDpmYQ==}
-
-  '@microsoft/clarity@1.0.0':
-    resolution: {integrity: sha512-2QY6SmXnqRj6dWhNY8NYCN3e53j4zCFebH4wGnNhdGV1mqAsQwql2fT0w8TISxCvwwfVp8idsWLIdrRHOms1PQ==}
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
@@ -3157,8 +3148,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.4
-
-  '@microsoft/clarity@1.0.0': {}
 
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:

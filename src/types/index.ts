@@ -14,25 +14,10 @@ export interface YouTubeVideo {
   };
 }
 
-export interface YouTubePlaylist {
-  id: string;
-  title: string;
-  description?: string;
-  videos: YouTubeVideo[];
-  totalVideos: number;
-}
-
 // Google Sheets API Types
 export interface SheetsCreateRequest {
   playlistTitle: string;
   videos: YouTubeVideo[];
-}
-
-export interface SheetsCreateResponse {
-  success: boolean;
-  spreadsheetId?: string;
-  spreadsheetUrl?: string;
-  error?: string;
 }
 
 // API Response Types
@@ -65,18 +50,6 @@ export interface PlaylistConverterProps {
 
 export interface AuthButtonProps {
   className?: string;
-}
-
-// Form Types
-export interface PlaylistFormData {
-  playlistUrl: string;
-}
-
-// Error Types
-export interface AppError {
-  message: string;
-  code?: string;
-  details?: Record<string, unknown>;
 }
 
 // Loading States

@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Playlist to Sheet
+
+A Next.js application that converts YouTube playlists to Google Sheets. Simply enter a YouTube playlist URL, authenticate with Google, and get a formatted spreadsheet with all video titles and URLs.
+
+## Features
+
+- 🎥 YouTube playlist parsing and validation
+- 📊 Google Sheets integration with automatic formatting
+- 🔐 Secure Google OAuth authentication
+- 🎨 Modern UI with dark/light theme support
+- ⚡ Built with Next.js 15 and TypeScript
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- pnpm (recommended)
+- Google API credentials (for Google Sheets and YouTube APIs)
+- Firebase project (for authentication)
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd playlist-to-sheet
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+pnpm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+# Edit .env.local with your Firebase configuration
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Run the development server:
+```bash
+pnpm dev
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-To learn more about Next.js, take a look at the following resources:
+## Configuration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Copy `.env.example` to `.env.local` and fill in your Firebase configuration:
 
-## Deploy on Vercel
+```bash
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+# ... etc
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Required Google APIs
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The application requires Google API access for:
+- Google Sheets API (creating and formatting spreadsheets)
+- Google Drive API (file permissions)
+- YouTube Data API v3 (reading playlist data)
+
+Make sure to enable these APIs in your Google Cloud Console and configure OAuth consent screen.
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS v4, shadcn/ui components
+- **Authentication**: Firebase Auth with Google OAuth
+- **APIs**: Google Sheets API, Google Drive API, YouTube Data API v3
+- **Icons**: Lucide React
+- **Theme**: next-themes for dark/light mode
+
+## Scripts
+
+```bash
+# Development
+pnpm dev          # Start development server
+pnpm build        # Build for production
+pnpm start        # Start production server
+pnpm lint         # Run ESLint
+```
+
+## Project Structure
+
+```
+src/
+├── app/                 # Next.js App Router
+│   ├── api/            # API routes
+│   │   ├── sheets/     # Google Sheets integration
+│   │   └── youtube/    # YouTube API integration
+│   └── globals.css     # Global styles
+├── components/         # React components
+│   ├── ui/            # shadcn/ui base components
+│   └── ...            # Application components
+├── contexts/          # React contexts
+├── lib/               # Utility functions
+└── ...
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run the linter: `pnpm lint`
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
